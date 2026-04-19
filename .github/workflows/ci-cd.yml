@@ -45,32 +45,33 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
+          set -e
+          set -x
+        
           echo "Connected to EC2"
-
-          # Install Docker & Git if not present
+        
           sudo yum update -y
           sudo yum install -y docker git
           sudo systemctl start docker
           sudo systemctl enable docker
-
+        
           cd /home/ec2-user
-
-          # Clone or pull repo
-          if [ ! -d "nginx-devops-demo" ]; then
-            git clone https://github.com/rajatdevops1/nginx-devops-demo.git
-          else
-            cd nginx-devops-demo && git pull
-          fi
-
+        
+          # Force clean state
+          rm -rf nginx-devops-demo
+        
+          echo "Cloning repo..."
+          GIT_ASKPASS=true git clone https://github.com/rajatdevops1/nginx-devops-demo.git
+        
           cd nginx-devops-demo
-
+        
           echo "Stopping old container..."
           sudo docker rm -f nginx-container || true
-
+        
           echo "Building new image..."
           sudo docker build -t nginx-devops-demo .
-
+        
           echo "Starting new container..."
           sudo docker run -d -p 80:80 --name nginx-container nginx-devops-demo
-
-          echo "Deployment done!"
+        
+          sudo docker ps -a
