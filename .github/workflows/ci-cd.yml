@@ -57,7 +57,7 @@ jobs:
 
           # Clone or pull repo
           if [ ! -d "nginx-devops-demo" ]; then
-            git clone https://github.com/<YOUR_GITHUB_USERNAME>/nginx-devops-demo.git
+            git clone https://github.com/rajatdevops1/nginx-devops-demo.git
           else
             cd nginx-devops-demo && git pull
           fi
